@@ -16,7 +16,7 @@
         <h1>Weather Dashboard</h1>
     </header>
     <main class="row justify-content-between">
-        <section class="sidebar col-2 mx-4">
+        <section class="sidebar col-2 mx-4 text-center">
             <h2>Search for a city</h2>
             <form id="location-form">
                 <input id="location-input" class="form-control" placeholder="Enter a location"></input>
@@ -24,16 +24,21 @@
             </form>
             <h3>Saved cities:</h3>
             <ul>
-                <li>Location 1</li>
-                <li>Location 2</li>
-                <li>Location 3</li>
-                <li>Location 1</li>
+                <li><button class="saved-city">Toronto</button></li>
+                <li><button class="saved-city">Mississauga</button></li>
+                <li><button class="saved-city">Vancouver</button></li>
+                <li><button class="saved-city">New York</button></li>
             </ul>
         </section>
-        <section class="container text-center">
+        <section class="container">
             <div class="row">
                 <div id="today-card" class="card col">
                     <h3 id="today">Today</h3>
+                    <ul>
+                        <li>Temperature: </li>
+                        <li>Feels like: </li>
+                        <li>Humidity: </li>
+                    </ul>
                 </div>
             </div>
             <div class="row">
