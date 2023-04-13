@@ -12,12 +12,12 @@ function getWeather(locationQuery) {
       })
       .then((geocodedLocation) => {
         coordinates = [geocodedLocation[0].lat, geocodedLocation[0].lon];
-        fetchWeatherData("weather");
-        fetchWeatherData("forecast");
+        fetchWeather("weather");
+        fetchWeather("forecast");
       });
   }
 
-  function fetchWeatherData(apiType) {
+  function fetchWeather(apiType) {
     fetch(
       `https://api.openweathermap.org/data/2.5/${apiType}?lat=${coordinates[0]}&lon=${coordinates[1]}&appid=${openWeatherApiKey}`
     )
@@ -46,8 +46,24 @@ function getWeather(locationQuery) {
         }
       });
   }
+
+  function printWeather() {
+    // Populate forecast cards.
+    for (var i = 1; i < $(".forecast").length + 1; i++) {
+     $(`.forecast:nth-child(${i})`).append(`
+     <h4>${dayjs().format("ddd, MMMM D")}</h4>
+     <ul>
+       <li>Temperature: </li>
+       <li>Feels like: </li>
+       <li>Humidity: </li>
+     </ul>
+     `);
+   }
+ }
   fetchGeocode();
 }
+
+
 
 // Run when document is ready.
 $(function () {
@@ -63,11 +79,14 @@ $(function () {
 
     // Add searched location to saved cities.
     $("#saved-cities").append(
-      `<li><button class="saved-city">${$(
-        "#location-input"
-      ).val()}</button></li>`
+      `<li>
+        <button class="saved-city">
+        ${$("#location-input").val()}
+        </button>
+      </li>`
     );
   });
+
 
   // Event delegation to handle newly saved cities.
   $("#saved-cities").on("click", "button", function (e) {
