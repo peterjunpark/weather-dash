@@ -16,41 +16,41 @@
         <h1>Weather Dashboard</h1>
     </header>
     <main class="row justify-content-between">
-        <section class="sidebar col-2 mx-4">
+        <section class="sidebar col-2 mx-4 text-center">
             <h2>Search for a city</h2>
             <form id="location-form">
                 <input id="location-input" class="form-control" placeholder="Enter a location"></input>
                 <button type="submit" class="btn btn-primary col-12">Show weather</button>
             </form>
             <h3>Saved cities:</h3>
-            <ul>
-                <li>Location 1</li>
-                <li>Location 2</li>
-                <li>Location 3</li>
-                <li>Location 1</li>
-            </ul>
+            <ul id="saved-cities"></ul>
         </section>
-        <section class="container text-center">
+        <section class="container">
             <div class="row">
                 <div id="today-card" class="card col">
                     <h3 id="today">Today</h3>
+                    <ul>
+                        <li>Temperature: </li>
+                        <li>Feels like: </li>
+                        <li>Humidity: </li>
+                    </ul>
                 </div>
             </div>
             <div class="row">
-                <div id="day1-card" class="card col">
-                    <h3>Day 1</h3>
+                <div id="day1-card" class="forecast card col">
+                    <h3></h3>
                 </div>
-                <div id="day2-card" class="card col">
-                    <h3>Day 2</h3>
+                <div id="day2-card" class="forecast card col">
+                    <h3></h3>
                 </div>
-                <div id="day3-card" class="card col">
-                    <h3>Day 3</h3>
+                <div id="day3-card" class="forecast card col">
+                    <h3></h3>
                 </div>
-                <div id="day4-card" class="card col">
-                    <h3>Day 4</h3>
+                <div id="day4-card" class="forecast card col">
+                    <h3></h3>
                 </div>
-                <div id="day5-card" class="card col">
-                    <h3>Day 5</h3>
+                <div id="day5-card" class="forecast card col">
+                    <h3></h3>
                 </div>
             </div>
         </section>
