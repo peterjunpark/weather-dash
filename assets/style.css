@@ -1,6 +1,11 @@
+.bg-image {
+    background-size: cover;
+}
+
 ul {
     padding: 0px;
 }
+
 li {
     list-style-type: none;
 }
