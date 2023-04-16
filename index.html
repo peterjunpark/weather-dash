@@ -11,77 +11,211 @@
     <link rel="stylesheet" href="./assets/style.css">
 </head>
 
-<body>
-    <header class="row justify-content-around">
-        <h1>Weather Dashboard</h1>
-    </header>
-    <main class="row justify-content-between">
-        <section class="sidebar col-2 mx-4 text-center">
-            <h2>Search for a city</h2>
-            <form id="location-form">
-                <input id="location-input" class="form-control" placeholder="Enter a location"></input>
-                <button type="submit" class="btn btn-primary col-12">Show weather</button>
-            </form>
-            <h3>Saved cities:</h3>
-            <ul id="saved-cities"></ul>
-        </section>
-        <section class="container">
-            <div class="row">
-                <div id="today-card" class="card col">
-                    <h3 id="today">Today</h3>
+<body class="bg-dark">
+    <main class="container my-5">
+        <div class="row">
+            <div class="col-4">
+                <div class="card card-body bg-info text-light">
+                    <h1>WEATHER DASHBOARD</h1>
+                    <form class="my-3">
+                        <div class="input-group">
+                            <input class="bg-light form-control border-0" type="text" placeholder="Search a city..." />
+                            <button class="btn btn-outline-light py-0 mx-1" type="button">
+                                Search
+                            </button>
+                        </div>
+                    </form>
+                    <h3>YOUR CITIES</h3>
                     <ul>
-                        <li>Temperature: </li>
-                        <li>Feels like: </li>
-                        <li>Humidity: </li>
+                        <li>Mississauga</li>
+                        <li>Toronto</li>
+                        <li>Seoul</li>
                     </ul>
+                    <button class="btn btn-outline-light">Save current city</button>
                 </div>
             </div>
+            <div class="col-8">
+                <div class="row">
+                    <div class="card card-body bg-secondary text-light">
+                        <h2 class="d-flex justify-content-between">
+                            <span>Mississauga</span>
+                            <span>SUN, April 16</span>
+                        </h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="card card-body bg-secondary text-light">
+                        <h4 class="card-title">Today</h4>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur perspiciatis laborum a
+                            asperiores, excepturi laudantium fugiat veniam, saepe sint deserunt natus neque? Suscipit
+                            quos quae ad quasi consequatur ducimus ut.
+                        </p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="card card-body bg-secondary text-light">
+                        <h4 class="card-title">Tomorrow</h4>
+                        <ul>
+                            <li>Morning</li>
+                            <li>Afternoon</li>
+                            <li>Evening</li>
+                        </ul>
+                    </div>
+                    <div class="card card-body bg-secondary text-light">
+                        <h4 class="card-title">Tomorrow</h4>
+                        <ul>
+                            <li>Morning</li>
+                            <li>Afternoon</li>
+                            <li>Evening</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="card card-body bg-secondary text-light">
+                <h4 class="card-title">Tomorrow</h4>
+                <ul>
+                    <li>Morning</li>
+                    <li>Afternoon</li>
+                    <li>Evening</li>
+                </ul>
+            </div>
+            <div class="card card-body bg-secondary text-light">
+                <h4 class="card-title">Tomorrow</h4>
+                <ul>
+                    <li>Morning</li>
+                    <li>Afternoon</li>
+                    <li>Evening</li>
+                </ul>
+            </div>
+            <div class="card card-body bg-secondary text-light">
+                <h4 class="card-title">Tomorrow</h4>
+                <ul>
+                    <li>Morning</li>
+                    <li>Afternoon</li>
+                    <li>Evening</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+
+
+    <!-- <header class="container-fluid">
+        <div class="row">
+            <div class="card col-12">
+                <div class="card-body d-flex justify-content-between">
+                    <h1>Weather Dashboard</h1>
+                    <form>
+                        <div class="input-group">
+                            <input class="bg-light form-control border-0" type="text" placeholder="Search a city..." />
+                            <button class="btn btn-primary py-0 mx-1" type="button">
+                                Search
+                            </button>
+                        </div>
+                    </form>
+                    <button class="btn btn-primary">Your cities</button>
+                </div>
+            </div>
+        </div>
+    </header>
+    <main>
+        <section class="container-fluid">
             <div class="row">
-                <div id="day1-card" class="forecast card col">
-                    <h3></h3>
-                </div>
-                <div id="day2-card" class="forecast card col">
-                    <h3></h3>
-                </div>
-                <div id="day3-card" class="forecast card col">
-                    <h3></h3>
-                </div>
-                <div id="day4-card" class="forecast card col">
-                    <h3></h3>
-                </div>
-                <div id="day5-card" class="forecast card col">
-                    <h3></h3>
+                <div class="card card-body col-12">
+                    <h3 class="card-title">Today's weather</h3>
+                    <div class="card-group">
+                        <div class="card card-body">
+                            <h4 class="card-title">Tomorrow</h4>
+                            <ul>
+                                <li>Morning</li>
+                                <li>Afternoon</li>
+                                <li>Evening</li>
+                            </ul>
+                        </div>
+                        <div class="card card-body">
+                            <span class="">🌞</span>
+                        </div>
+                        <div class="card card-body">
+                            <h4 class="card-title">Tomorrow</h4>
+                            <ul>
+                                <li>Morning</li>
+                                <li>Afternoon</li>
+                                <li>Evening</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
         </section>
 
-
-        <!-- <div class="container col-6">
-            <div class="card col-lg-3 col-12">
-                <div class="card-body">
-                    Hello
+        <section class="container-fluid">
+            <div class="row">
+                <div class="card card-body col-12">
+                    <h3 class="card-title">5-day forecast</h3>
+                    <div class="card-group">
+                        <div class="card card-body">
+                            <h4 class="card-title">Tomorrow</h4>
+                            <ul>
+                                <li>Morning</li>
+                                <li>Afternoon</li>
+                                <li>Evening</li>
+                            </ul>
+                        </div>
+                        <div class="card card-body">
+                            <h4 class="card-title">Tomorrow</h4>
+                            <ul>
+                                <li>Morning</li>
+                                <li>Afternoon</li>
+                                <li>Evening</li>
+                            </ul>
+                        </div>
+                        <div class="card card-body">
+                            <h4 class="card-title">Tomorrow</h4>
+                            <ul>
+                                <li>Morning</li>
+                                <li>Afternoon</li>
+                                <li>Evening</li>
+                            </ul>
+                        </div>
+                        <div class="card card-body">
+                            <h4 class="card-title">Tomorrow</h4>
+                            <ul>
+                                <li>Morning</li>
+                                <li>Afternoon</li>
+                                <li>Evening</li>
+                            </ul>
+                        </div>
+                        <div class="card card-body">
+                            <h4 class="card-title">Tomorrow</h4>
+                            <ul>
+                                <li>Morning</li>
+                                <li>Afternoon</li>
+                                <li>Evening</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div id="day1" class="card col-2">
-                <h3>Today</h3>
+            <p>
+                <a class="btn btn-primary" data-toggle="collapse" href="#collapseExample" role="button"
+                    aria-expanded="false" aria-controls="collapseExample">
+                    Link with href
+                </a>
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample"
+                    aria-expanded="false" aria-controls="collapseExample">
+                    Button with data-target
+                </button>
+            </p>
+            <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
+                    Nihil anim keffiyeh helvetica, craft beer labore wes anderson cred nesciunt sapiente ea proident.
+                </div>
             </div>
-            <div id="day1" class="card col-2">
-                <h3>Day 1</h3>
-            </div>
-            <div id="day1" class="card col-2">
-                <h3>Day 2</h3>
-            </div>
-            <div id="day1" class="card col-2">
-                <h3>Day 3</h3>
-            </div>
-            <div id="day1" class="card col-2">
-                <h3>Day 4</h3>
-            </div>
-            <div id="day1" class="card col-2">
-                <h3>Day 5</h3>
-            </div>
-        </div> -->
-    </main>
+        </section>
+    </main> -->
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"
         integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
