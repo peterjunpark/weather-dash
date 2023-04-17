@@ -17,6 +17,7 @@ var weatherConditions = {
   Thunderstorm: `<i class="fa-solid fa-cloud-bolt display-2 me-3"></i>`,
   Tornado: `<i class="fa-solid fa-tornado display-2 me-3"></i>`,
 };
+var savedCities = [];
 
 function printLocation(city, state) {
   $("#main-weather-section").remove();
@@ -27,7 +28,7 @@ function printLocation(city, state) {
       <div class="row">
         <div class="card card-body bg-secondary text-light border-dark m-1">
           <h2 class="d-flex justify-content-between">
-            <span>
+            <span id="current-city">
               <i class="fa-solid fa-tree-city me-3"></i>${city}, <small>${state}</small>
             </span>
             <span>
@@ -102,6 +103,7 @@ function printForecast(forecast) {
 
 function getWeather(locationQuery) {
   var openWeatherApiKey = "aa36a4eada79b71406a62586e875e41b";
+  var city;
   var coordinates = [];
 
   // Convert location input to coordinates to make API call for weather data.
@@ -113,9 +115,10 @@ function getWeather(locationQuery) {
         return response.json();
       })
       .then((data) => {
+        city = data[0].name;
         coordinates = [data[0].lat, data[0].lon];
 
-        printLocation(data[0].name, data[0].state);
+        printLocation(city, data[0].state);
         fetchWeather("weather"); // Today.
         fetchWeather("forecast"); // Forecast.
       });
@@ -184,19 +187,37 @@ function addSaveBtn() {
     `);
 
   // Save current city to saved cities dropdown.
-  $("#save-city").on("click", function () {
-    $("#saved-cities").append(
-      `<li class="saved-city d-flex justify-content-between">
-        <button class="dropdown-item">
-          ${$("#location-input").val()}
-        </button>
-        <button class="delete-city btn btn-outline-danger border-0">
-          <i class="fa-solid fa-delete-left"></i>
-        </button>
-      </li>`
-    );
+  $("#save-city-btn").on("click", function () {
+    if (!savedCities.includes($("#current-city").text().trim())) {
+      savedCities.unshift($("#current-city").text().trim());
+      localStorage.setItem("savedCities", JSON.stringify(savedCities));
+      getSavedCities();
+    }
   });
 }
+
+function getSavedCities() {
+  if (localStorage.getItem("savedCities")) {
+    savedCities = JSON.parse(localStorage.getItem("savedCities"));
+  }
+
+  $("#saved-cities").empty();
+
+  // Add saved cities to dropdown.
+  for (city of savedCities) {
+    $("#saved-cities").append(
+      `<li><button class="dropdown-item">${city}</button></li>`
+    );
+  }
+}
+// `<li class="saved-city d-flex justify-content-between">
+//         <button class="dropdown-item">
+//           ${$("#location-input").val()}
+//         </button>
+//         <button class="delete-city btn btn-outline-danger border-0">
+//           <i class="fa-solid fa-delete-left"></i>
+//         </button>
+//       </li>`
 
 // Run when document is ready.
 $(function () {
