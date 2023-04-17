@@ -17,103 +17,49 @@ var weatherConditions = {
   Thunderstorm: `<i class="fa-solid fa-cloud-bolt  mx-2"></i>`,
   Tornado: `<i class="fa-solid fa-tornado mx-2"></i>`,
 };
+var removeSection = {
+  main: function () {
+    $("#main-weather-section").remove();
+  },
+  today: function () {
+    $("#today-section").empty();
+  },
+  forecast: function () {
+    $("#forecast-section").empty();
+  },
+};
 var savedCities = [];
 
-function printLocation(city, state) {
-  $("#main-weather-section").remove();
-  // Display selected city and today's date.
-  $("#weather-content").append(`
-    <!-- Current location + today's date -->
-    <div id="main-weather-section" class="col-lg-8">
-      <div class="row">
-        <div class="card card-body bg-secondary text-light border-dark m-1">
-          <h2 class="d-flex justify-content-between">
-            <span id="current-city">
-              <i class="fa-solid fa-tree-city me-3"></i>${city}
-            </span>
-            <span>
-              <i class="fa-solid fa-calendar-day me-3"></i>${dayjs().format(
-                dateFormat
-              )}
-            </span>
-          </h2>
-        </div>
-      </div>
-
-      <!-- Today's weather -->
-      <section id="today-section" class="row"></section>
-    </div>
-  `);
-
-  if (state) {
-    $("#current-city").append(`, <small>${state}</small>`);
+function getSavedCities() {
+  if (localStorage.getItem("savedCities")) {
+    savedCities = JSON.parse(localStorage.getItem("savedCities"));
+    $("#saved-cities").empty();
+    // Add saved cities to dropdown.
+    for (city of savedCities) {
+      $("#saved-cities").append(
+        `<li><button class="dropdown-item">${city}</button></li>`
+      );
+    }
   }
 }
 
-function printToday(today) {
-  $("#today-section").empty();
-  $("#today-section").append(`
-    <div class="card card-body bg-secondary text-light border-dark m-1">
-      <h3 class="card-title text-end">Today</h3>
-      <div class="row">
-        <div class="col d-flex justify-content-around align-items-center">
-          <span id="current-temp" class="display-2">${today.currentTemp}℃</span>
-          <ul>
-            <li><i class="fa-solid fa-child me-1"></i>Feels like: ${today.feelsLike}℃</li>
-            <li><i class="fa-solid fa-temperature-empty me-1"></i>Low: ${today.lowTemp}℃</li>
-            <li><i class="fa-solid fa-temperature-full me-1"></i>High: ${today.highTemp}℃</li>
-          </ul>
-          <div id="today-condition">
-            ${today.condition}
-          </div>
-        </div>
-      </div>
-        <div class="row">
-          <div class="col">
-            <hr>
-            <ul class="d-flex justify-content-around">
-              <li><i class="fa-solid fa-wind me-1"></i>Wind speed: ${today.windSpeed}km/h</li>
-              <li><i class="fa-solid fa-water me-1"></i>Humidity: ${today.humidity}%</li>
-              <li><i class="fa-solid fa-cloud-sun me-1"></i>Sunset: ${today.sunset}</li>
-            </ul>
-        </div>
-      </div>
-    </div>
-  `);
+function addSaveBtn() {
+  if (!$("#save-city-btn").length) {
+    $("#city-controls").append(`
+      <button id="save-city-btn" class="btn btn-outline-light" type="button">
+        <i class="fa-solid fa-floppy-disk"></i>
+      </button>
+    `);
 
-  $("#today-condition i").addClass("display-2");
-}
-
-function printForecast(forecast) {
-  $("#forecast-section").empty();
-  for (var date in forecast) {
-    $("#forecast-section").append(`
-     <div class="col p-0">
-        <div class="forecast card card-body bg-secondary text-light border-dark m-1">
-            <h4 class="card-title text-end">${date}</h4>
-            <ul>
-                <li>
-                  Morning: ${Math.round(forecast[date].morningTemp)}℃
-                  ${forecast[date].morningCondition}
-                </li>
-                <li>
-                  Afternoon: ${Math.round(forecast[date].afternoonTemp)}
-                  ${forecast[date].afternoonCondition}
-                </li>
-                <li>
-                  Evening: ${Math.round(forecast[date].eveningTemp)}℃
-                  ${forecast[date].eveningCondition}
-                </li>
-                <hr>
-                <li>Wind speed: ${Math.round(forecast[date].windSpeed)}km/h</li>
-                <li>Humidity: ${forecast[date].humidity}%</li>
-            </ul>
-        </div>
-      </div>
-  `);
+    // Save current city to saved cities dropdown.
+    $("#save-city-btn").on("click", function () {
+      if (!savedCities.includes($("#current-city").text().trim())) {
+        savedCities.unshift($("#current-city").text().trim());
+        localStorage.setItem("savedCities", JSON.stringify(savedCities));
+        getSavedCities();
+      }
+    });
   }
-
-  console.log(forecast);
 }
 
 function getWeather(locationQuery) {
@@ -136,9 +82,10 @@ function getWeather(locationQuery) {
         printLocation(city, data[0].state);
         fetchWeather("weather"); // Today.
         fetchWeather("forecast"); // Forecast.
+        addSaveBtn(); // Show save button.
       })
-      .catch(error => {
-        alert("shit")
+      .catch((error) => {
+        Object.values(removeSection).forEach((remove) => remove());
       });
   })();
 
@@ -176,19 +123,22 @@ function getWeather(locationQuery) {
             if (interval.dt_txt.endsWith("09:00:00")) {
               forecast[date] = {};
               forecast[date].morningTemp = interval.main.temp;
-              forecast[date].morningCondition = weatherConditions[interval.weather[0].main];
+              forecast[date].morningCondition =
+                weatherConditions[interval.weather[0].main];
             }
 
             if (interval.dt_txt.endsWith("15:00:00")) {
               forecast[date].afternoonTemp = interval.main.temp;
-              forecast[date].afternoonCondition = weatherConditions[interval.weather[0].main];
+              forecast[date].afternoonCondition =
+                weatherConditions[interval.weather[0].main];
               forecast[date].windSpeed = interval.wind.speed;
               forecast[date].humidity = interval.main.humidity;
             }
 
             if (interval.dt_txt.endsWith("18:00:00")) {
               forecast[date].eveningTemp = interval.main.temp;
-              forecast[date].eveningCondition = weatherConditions[interval.weather[0].main];
+              forecast[date].eveningCondition =
+                weatherConditions[interval.weather[0].main];
             }
           }
           printForecast(forecast);
@@ -197,35 +147,98 @@ function getWeather(locationQuery) {
   }
 }
 
-function addSaveBtn() {
-  if (!$("#save-city-btn").length) {
-    $("#city-controls").append(`
-      <button id="save-city-btn" class="btn btn-outline-light" type="button">
-        <i class="fa-solid fa-floppy-disk"></i>
-      </button>
-    `);
+function printLocation(city, state) {
+  removeSection.main();
+  // Display selected city and today's date.
+  $("#weather-content").append(`
+    <!-- Current location + today's date -->
+    <div id="main-weather-section" class="col-lg-8">
+      <div class="row">
+        <div class="card card-body bg-secondary text-light border-dark m-1">
+          <h2 class="d-flex justify-content-between">
+            <span id="current-city">
+              <i class="fa-solid fa-tree-city me-3"></i>${city}
+            </span>
+            <span>
+              <i class="fa-solid fa-calendar-day me-3"></i>${dayjs().format(
+                dateFormat
+              )}
+            </span>
+          </h2>
+        </div>
+      </div>
 
-    // Save current city to saved cities dropdown.
-    $("#save-city-btn").on("click", function () {
-      if (!savedCities.includes($("#current-city").text().trim())) {
-        savedCities.unshift($("#current-city").text().trim());
-        localStorage.setItem("savedCities", JSON.stringify(savedCities));
-        getSavedCities();
-      }
-    });
+      <!-- Today's weather -->
+      <section id="today-section" class="row"></section>
+    </div>
+  `);
+
+  if (state) {
+    $("#current-city").append(`, <small>${state}</small>`);
   }
 }
 
-function getSavedCities() {
-  if (localStorage.getItem("savedCities")) {
-    savedCities = JSON.parse(localStorage.getItem("savedCities"));
-    $("#saved-cities").empty();
-    // Add saved cities to dropdown.
-    for (city of savedCities) {
-      $("#saved-cities").append(
-        `<li><button class="dropdown-item">${city}</button></li>`
-      );
-    }
+function printToday(today) {
+  removeSection.today();
+  $("#today-section").append(`
+    <div class="card card-body bg-secondary text-light border-dark m-1">
+      <h3 class="card-title text-end">Today</h3>
+      <div class="row">
+        <div class="col d-flex justify-content-around align-items-center">
+          <span id="current-temp" class="display-2">${today.currentTemp}℃</span>
+          <ul>
+            <li><i class="fa-solid fa-child me-1"></i>Feels like: ${today.feelsLike}℃</li>
+            <li><i class="fa-solid fa-temperature-empty me-1"></i>Low: ${today.lowTemp}℃</li>
+            <li><i class="fa-solid fa-temperature-full me-1"></i>High: ${today.highTemp}℃</li>
+          </ul>
+          <div id="today-condition">
+            ${today.condition}
+          </div>
+        </div>
+      </div>
+        <div class="row">
+          <div class="col">
+            <hr>
+            <ul class="d-flex justify-content-around">
+              <li><i class="fa-solid fa-wind me-1"></i>Wind speed: ${today.windSpeed}km/h</li>
+              <li><i class="fa-solid fa-water me-1"></i>Humidity: ${today.humidity}%</li>
+              <li><i class="fa-solid fa-cloud-sun me-1"></i>Sunset: ${today.sunset}</li>
+            </ul>
+        </div>
+      </div>
+    </div>
+  `);
+
+  $("#today-condition i").addClass("display-2");
+}
+
+function printForecast(forecast) {
+  removeSection.forecast();
+  for (var date in forecast) {
+    $("#forecast-section").append(`
+     <div class="col p-0">
+        <div class="forecast card card-body bg-secondary text-light border-dark m-1">
+            <h4 class="card-title text-end">${date}</h4>
+            <ul>
+                <li>
+                  Morning: ${Math.round(forecast[date].morningTemp)}℃
+                  ${forecast[date].morningCondition}
+                </li>
+                <li>
+                  Afternoon: ${Math.round(forecast[date].afternoonTemp)}
+                  ${forecast[date].afternoonCondition}
+                </li>
+                <li>
+                  Evening: ${Math.round(forecast[date].eveningTemp)}℃
+                  ${forecast[date].eveningCondition}
+                </li>
+                <hr>
+                <li>Wind speed: ${Math.round(forecast[date].windSpeed)}km/h</li>
+                <li>Humidity: ${forecast[date].humidity}%</li>
+            </ul>
+        </div>
+      </div>
+  `);
   }
 }
 
@@ -236,23 +249,12 @@ $(function () {
   // Weather query: search bar.
   $("#location-form").on("submit", function (e) {
     e.preventDefault();
-
-    // Show weather data.
     getWeather($("#location-input").val().trim());
-
-    // Show save button.
-    addSaveBtn();
   });
 
   // Weather query: saved city
   // Event delegation to handle newly saved cities.
   $("#saved-cities").on("click", "button", function (e) {
-    // Show weather data.
     getWeather(e.target.textContent);
-
-    // Show save button.
-    addSaveBtn();
   });
 });
-
-var pexelsApiKey = "yrsB9C7fdv4f4SKZW0x33yLQTI5K0aQRyMFY6UUZPvHFdOGKiltYHvC6";
