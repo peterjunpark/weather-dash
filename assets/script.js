@@ -24,9 +24,21 @@ function getWeather(locationQuery) {
 
   function fetchWeather(apiType) {
     var weatherConditions = {
+      Ash: `<i class="fa-solid fa-volcano display-2 me-3"></i>`,
       Clear: '<i class="fa-solid fa-sun display-2 me-3"></i>',
       Clouds: '<i class="fa-solid fa-cloud display-2 me-3"></i>',
-      Rain: '<i class="fa-solid fa-cloud-rain display-2 me-3"></i>',
+      Drizzle: '<i class="fa-solid fa-cloud-rain display-2 me-3"></i>',
+      Dust: `<i class="fa-solid fa-smog display-2 me-3"></i>`,
+      Fog: `<i class="fa-solid fa-smog display-2 me-3"></i>`,
+      Haze: `<i class="fa-solid fa-smog display-2 me-3"></i>`,
+      Mist: `<i class="fa-solid fa-smog display-2 me-3"></i>`,
+      Rain: `<i class="fa-solid fa-cloud-showers-heavy display-2 me-3"></i>`,
+      Sand: `<i class="fa-solid fa-smog display-2 me-3"></i>`,
+      Smoke: `<i class="fa-solid fa-smog display-2 me-3"></i>`,
+      Snow: `<i class="fa-solid fa-snowflake display-2 me-3"></i>`,
+      Squall: `<i class="fa-solid fa-hurricane display-2 me-3"></i>`,
+      Thunderstorm: `<i class="fa-solid fa-cloud-bolt display-2 me-3"></i>`,
+      Tornado: `<i class="fa-solid fa-tornado display-2 me-3"></i>`,
     };
 
     fetch(
