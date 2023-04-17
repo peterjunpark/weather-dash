@@ -6,119 +6,168 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Weather Dashboard</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
-        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+    <script src="https://kit.fontawesome.com/5f4c03ee38.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="./assets/style.css">
 </head>
 
 <body class="bg-image"
-    style="background-image: url('https://images.pexels.com/photos/593150/pexels-photo-593150.jpeg')">
+    style="background-image: url('https://images.pexels.com/photos/2382868/pexels-photo-2382868.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')">
     <main class="container mt-5">
+
+        <!-- Dashboard controls -->
         <div class="row">
-            <div class="col-4 p-0">
-                <div class="card card-body bg-dark text-light border-dark m-1 mr-3">
-                    <h1 class="text-uppercase">Weather Dashboard</h1>
+            <div class="col-lg-4 p-0 mx-auto">
+                <div class="card card-body bg-dark text-light border-dark m-1 me-3">
+                    <h1 class="text-uppercase text-center display-5">Weather Dashboard</h1>
+
+                    <!-- Search control -->
                     <form id="location-form" class="my-3">
                         <div class="input-group">
                             <input id="location-input" class="bg-light form-control border-0 mx-1 rounded" type="text"
                                 placeholder="Search a city..." />
-                            <button class="btn btn-outline-light py-0 mx-1" type="submit">
-                                ☛
+                            <button class="btn btn-lg btn-outline-light py-0 mx-1 rounded" type="submit">
+                                <i class="fa-solid fa-magnifying-glass-location"></i>
                             </button>
                         </div>
                     </form>
-                    <h3 class="text-uppercase">Your Cities</h3>
-                    <ul class="mx-4">
-                        <li class="d-flex justify-content-between my-1">
-                            <button class="btn btn-outline-warning border-0">Mississauga</button>
-                            <button class="btn btn-outline-danger border-0">✖︎</button>
-                        </li>
-                        <li class="d-flex justify-content-between my-1">
-                            <button class="btn btn-outline-warning border-0">Downtown Toronto</button>
-                            <button class="btn btn-outline-danger border-0">✖︎</button>
-                        </li>
-                        <li class="d-flex justify-content-between my-1">
-                            <button class="btn btn-outline-warning border-0">Quebec City</button>
-                            <button class="btn btn-outline-danger border-0">✖︎</button>
-                        </li>
-                        <li class="d-flex justify-content-between my-1">
-                            <button class="btn btn-outline-warning border-0">Ganonoque</button>
-                            <button class="btn btn-outline-danger border-0">✖︎</button>
-                        </li>
-                    </ul>
-                    <button class="btn btn-outline-light mx-5">Save current city</button>
+
+                    <!-- Saved cities controls -->
+                    <div class="d-flex justify-content-center gap-3">
+                        <div class="dropdown">
+                            <button id="cities-dropdown" class="btn btn-outline-light dropdown-toggle"
+                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Your cities
+                                <i class="fa-solid fa-map-location-dot ms-2"></i>
+                            </button>
+                            <ul id="saved-cities" class="dropdown-menu" aria-labelledby="cities-dropdown">
+                                <li><button class="dropdown-item">Mississauga</button></li>
+                                <li><button class="dropdown-item">Mississauga</button></li>
+                            </ul>
+                        </div>
+                        <button id="save-city" class="btn btn-outline-light" type="button">
+                            <i class="fa-solid fa-floppy-disk"></i>
+                        </button>
+                    </div>
                 </div>
             </div>
-            <div class="col-8">
+
+            <!-- Current location + today's date -->
+            <div class="col-lg-8">
                 <div class="row">
                     <div class="card card-body bg-secondary text-light border-dark m-1">
                         <h2 class="d-flex justify-content-between">
-                            <span>Downtown Toronto</span>
-                            <span>SUN, April 16</span>
+                            <span id="current-city" class="display-6"></span>
+                            <span id="today" class="display-6"></span>
                         </h2>
                     </div>
                 </div>
+
+                <!-- Today's weather -->
                 <div class="row">
-                    <div class="card card-body bg-secondary text-light border-dark m-1">
-                        <h4 class="card-title text-right text-uppercase">Today</h4>
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur perspiciatis laborum a
-                            asperiores, excepturi laudantium fugiat veniam, saepe sint deserunt natus neque? Suscipit
-                            quos quae ad quasi consequatur ducimus ut.
-                        </p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="card card-body bg-secondary text-light border-dark m-1">
-                        <h4 class="card-title text-right text-uppercase">Tomorrow</h4>
-                        <ul>
-                            <li>Morning</li>
-                            <li>Afternoon</li>
-                            <li>Evening</li>
-                        </ul>
-                    </div>
-                    <div class="card card-body bg-secondary text-light border-dark m-1">
-                        <h4 class="card-title text-right">TUE, April 19</h4>
-                        <ul>
-                            <li>Morning</li>
-                            <li>Afternoon</li>
-                            <li>Evening</li>
-                        </ul>
+                    <div id="today-card" class="card card-body bg-secondary text-light border-dark m-1">
+                        <h3 class="card-title text-end">Today</h3>
+                        <!-- <div class="row">
+                            <div class="col d-flex justify-content-around align-items-center">
+                                <span id="current-temp" class="display-2"></span>
+                                <ul>
+                                    <li><i class="fa-solid fa-child me-1"></i>Feels like: 17.6℃</li>
+                                    <li><i class="fa-solid fa-temperature-empty me-1"></i>Low: 10.5℃</li>
+                                    <li><i class="fa-solid fa-temperature-full me-1"></i>High: 22.1℃</li>
+                                </ul>
+                                <i class="fa-solid fa-cloud display-2 me-3"></i>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <hr>
+                                <ul class="d-flex justify-content-around">
+                                    <li><i class="fa-solid fa-wind me-1"></i>Wind speed: 4.6km/h</li>
+                                    <li><i class="fa-solid fa-water me-1"></i>Humidity: 62%</li>
+                                    <li><i class="fa-solid fa-cloud-sun me-1"></i>Sunset: 8:01 PM</li>
+                                </ul>
+                            </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- 5-day forecast -->
         <div class="row">
-            <div class="card card-body bg-secondary text-light border-dark m-1">
-                <h4 class="card-title text-right">WED, April 20</h4>
-                <ul>
-                    <li>Morning</li>
-                    <li>Afternoon</li>
-                    <li>Evening</li>
-                </ul>
+            <div class="col p-0">
+                <div class="card card-body bg-secondary text-light border-dark m-1">
+                    <h3 class="card-title text-end">Tomorrow</h3>
+                    <ul>
+                        <li>Morning: </li>
+                        <li>Afternoon: </li>
+                        <li>Evening: </li>
+                        <hr>
+                        <li>Wind speed:</li>
+                        <li>Humidity: </li>
+                    </ul>
+                </div>
             </div>
-            <div class="card card-body bg-secondary text-light border-dark m-1">
-                <h4 class="card-title text-right">THU, April 21</h4>
-                <ul>
-                    <li>Morning</li>
-                    <li>Afternoon</li>
-                    <li>Evening</li>
-                </ul>
+            <div class="col p-0">
+                <div class="card card-body bg-secondary text-light border-dark m-1">
+                    <h3 class="card-title text-end">TOMORROW</h3>
+                    <ul>
+                        <li>Morning: </li>
+                        <li>Afternoon: </li>
+                        <li>Evening: </li>
+                        <hr>
+                        <li>Wind speed:</li>
+                        <li>Humidity: </li>
+                    </ul>
+                </div>
             </div>
-            <div class="card card-body bg-secondary text-light border-dark m-1">
-                <h4 class="card-title text-right">FRI, April 22</h4>
-                <ul>
-                    <li>Morning</li>
-                    <li>Afternoon</li>
-                    <li>Evening</li>
-                </ul>
+            <div class="col p-0">
+                <div class="card card-body bg-secondary text-light border-dark m-1">
+                    <h3 class="card-title text-end">TOMORROW</h3>
+                    <ul>
+                        <li>Morning: </li>
+                        <li>Afternoon: </li>
+                        <li>Evening: </li>
+                        <hr>
+                        <li>Wind speed:</li>
+                        <li>Humidity: </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col p-0">
+                <div class="card card-body bg-secondary text-light border-dark m-1">
+                    <h3 class="card-title text-end">TOMORROW</h3>
+                    <ul>
+                        <li>Morning: </li>
+                        <li>Afternoon: </li>
+                        <li>Evening: </li>
+                        <hr>
+                        <li>Wind speed:</li>
+                        <li>Humidity: </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col p-0">
+                <div class="card card-body bg-secondary text-light border-dark m-1">
+                    <h3 class="card-title text-end">TOMORROW</h3>
+                    <ul>
+                        <li>Morning: </li>
+                        <li>Afternoon: </li>
+                        <li>Evening: </li>
+                        <hr>
+                        <li>Wind speed:</li>
+                        <li>Humidity: </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </main>
 
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"
         integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.min.js"
-        integrity="sha384-cuYeSxntonz0PPNlHhBs68uyIAVpIIOZZ5JqeqvYYIcEL727kskC66kF92t6Xl2V"
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/dayjs@1.11.7/dayjs.min.js"></script>
     <script src="./assets/script.js"></script>
