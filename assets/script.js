@@ -199,32 +199,23 @@ function addSaveBtn() {
 function getSavedCities() {
   if (localStorage.getItem("savedCities")) {
     savedCities = JSON.parse(localStorage.getItem("savedCities"));
-  }
-
-  $("#saved-cities").empty();
-
-  // Add saved cities to dropdown.
+    $("#saved-cities").empty();
+    // Add saved cities to dropdown.
   for (city of savedCities) {
     $("#saved-cities").append(
       `<li><button class="dropdown-item">${city}</button></li>`
     );
   }
+  }
 }
-// `<li class="saved-city d-flex justify-content-between">
-//         <button class="dropdown-item">
-//           ${$("#location-input").val()}
-//         </button>
-//         <button class="delete-city btn btn-outline-danger border-0">
-//           <i class="fa-solid fa-delete-left"></i>
-//         </button>
-//       </li>`
 
 // Run when document is ready.
 $(function () {
+  getSavedCities();
   // Get location input.
   $("#location-form").on("submit", function (e) {
     e.preventDefault();
-    //TODO: ADD VALIDATION.
+
     // Show weather data.
     getWeather($("#location-input").val().trim());
     // Show save button.
