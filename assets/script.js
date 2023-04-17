@@ -1,4 +1,5 @@
-var dateFormat = "dddd, MMMM D";
+var dateFormat = "ddd, MMMM D";
+var timeFormat = "h:mm A";
 var weatherConditions = {
   Ash: `<i class="fa-solid fa-volcano display-2 me-3"></i>`,
   Clear: '<i class="fa-solid fa-sun display-2 me-3"></i>',
@@ -17,54 +18,86 @@ var weatherConditions = {
   Tornado: `<i class="fa-solid fa-tornado display-2 me-3"></i>`,
 };
 
+function printLocation(city, state) {
+  $("#main-weather-section").remove();
+  // Display selected city and today's date.
+  $("#weather-content").append(`
+    <!-- Current location + today's date -->
+    <div id="main-weather-section" class="col-lg-8">
+      <div class="row">
+        <div class="card card-body bg-secondary text-light border-dark m-1">
+          <h2 class="d-flex justify-content-between">
+            <span>
+              <i class="fa-solid fa-tree-city me-3"></i>${city}, <small>${state}</small>
+            </span>
+            <span>
+              <i class="fa-solid fa-calendar-day me-3"></i>${dayjs().format(
+                dateFormat
+              )}
+            </span>
+          </h2>
+        </div>
+      </div>
 
-function printLocation(city, state) { // Populate selected city and today's date.
-  $("#current-city").append(`<i class="fa-solid fa-tree-city me-3"></i>${city}, <small>${state}</small>`);
-  $("#today").append(`<i class="fa-solid fa-calendar-day me-3"></i>${dayjs().format(dateFormat)}`);
+      <!-- Today's weather -->
+      <section id="today-section" class="row"></section>
+  </div>
+
+
+  `);
 }
 
 function printToday(today) {
-  $("#today-card").append(`
-            <div class="row">
-              <div class="col d-flex justify-content-around align-items-center">
-                <span id="current-temp" class="display-2">${today.currentTemp}℃</span>
-                <ul>
-                  <li><i class="fa-solid fa-child me-1"></i>Feels like: ${today.feelsLike}℃</li>
-                  <li><i class="fa-solid fa-temperature-empty me-1"></i>Low: ${today.lowTemp}℃</li>
-                  <li><i class="fa-solid fa-temperature-full me-1"></i>High: ${today.highTemp}℃</li>
-                </ul>
-                ${today.condition}
-              </div>
-            </div>
-            <div class="row">
-              <div class="col">
-                <hr>
-                <ul class="d-flex justify-content-around">
-                  <li><i class="fa-solid fa-wind me-1"></i>Wind speed: ${today.windSpeed}km/h</li>
-                  <li><i class="fa-solid fa-water me-1"></i>Humidity: ${today.humidity}%</li>
-                  <li><i class="fa-solid fa-cloud-sun me-1"></i>Sunset: ${today.sunset}</li>
-                </ul>
-              </div>
-            </div>
-          `)
+  $("#today-section").empty();
+  $("#today-section").append(`
+    <div class="card card-body bg-secondary text-light border-dark m-1">
+      <h3 class="card-title text-end">Today</h3>
+      <div class="row">
+        <div class="col d-flex justify-content-around align-items-center">
+          <span id="current-temp" class="display-2">${today.currentTemp}℃</span>
+          <ul>
+            <li><i class="fa-solid fa-child me-1"></i>Feels like: ${today.feelsLike}℃</li>
+            <li><i class="fa-solid fa-temperature-empty me-1"></i>Low: ${today.lowTemp}℃</li>
+            <li><i class="fa-solid fa-temperature-full me-1"></i>High: ${today.highTemp}℃</li>
+          </ul>
+          ${today.condition}
+        </div>
+      </div>
+        <div class="row">
+          <div class="col">
+            <hr>
+            <ul class="d-flex justify-content-around">
+              <li><i class="fa-solid fa-wind me-1"></i>Wind speed: ${today.windSpeed}km/h</li>
+              <li><i class="fa-solid fa-water me-1"></i>Humidity: ${today.humidity}%</li>
+              <li><i class="fa-solid fa-cloud-sun me-1"></i>Sunset: ${today.sunset}</li>
+            </ul>
+        </div>
+      </div>
+    </div>
+  `);
 }
 
 function printForecast(forecast) {
-  $("section .forecast").append(`
-    <div class="col p-0">
+  $("#forecast-section").empty();
+  for (var date in forecast) {
+    $("#forecast-section").append(`
+     <div class="col p-0">
         <div class="forecast card card-body bg-secondary text-light border-dark m-1">
-            <h3 class="card-title text-end">${forecast.date}</h3>
+            <h4 class="card-title text-end">${date}</h4>
             <ul>
-                <li>Morning: ${forecast.morning}</li>
-                <li>Afternoon: ${forecast.afternoon}</li>
-                <li>Evening: ${forecast.evening}</li>
+                <li>Morning: ${forecast[date].morningTemp}℃</li>
+                <li>Afternoon: ${forecast[date].afternoonTemp}℃</li>
+                <li>Evening: ${forecast[date].eveningTemp}℃</li>
                 <hr>
-                <li>Wind speed:${forecast.wind}</li>
-                <li>Humidity: ${forecast.humidity}</li>
+                <li>Wind speed: ${forecast[date].windSpeed}km/h</li>
+                <li>Humidity: ${forecast[date].humidity}%</li>
             </ul>
         </div>
-    </div>
+      </div>
   `);
+  }
+
+  console.log(forecast);
 }
 
 function getWeather(locationQuery) {
@@ -72,7 +105,7 @@ function getWeather(locationQuery) {
   var coordinates = [];
 
   // Convert location input to coordinates to make API call for weather data.
-  function fetchGeocode() {
+  (function fetchGeocode() {
     fetch(
       `https://api.openweathermap.org/geo/1.0/direct?q=${locationQuery}&appid=${openWeatherApiKey}`
     )
@@ -83,12 +116,16 @@ function getWeather(locationQuery) {
         coordinates = [data[0].lat, data[0].lon];
 
         printLocation(data[0].name, data[0].state);
-        fetchWeather("weather");
-        fetchWeather("forecast");
+        fetchWeather("weather"); // Today.
+        fetchWeather("forecast"); // Forecast.
       });
-  }
+  })();
 
   function fetchWeather(apiType) {
+    var apiDateFormat = "YYYY-MM-DD hh:mm:ss";
+    var forecast = {};
+    var date;
+
     fetch(
       `https://api.openweathermap.org/data/2.5/${apiType}?lat=${coordinates[0]}&lon=${coordinates[1]}&units=metric&appid=${openWeatherApiKey}`
     )
@@ -96,7 +133,7 @@ function getWeather(locationQuery) {
         return response.json();
       })
       .then((data) => {
-        // Get current weather.
+        // Print today's weather.
         if (apiType === "weather") {
           printToday({
             currentTemp: Math.round(data.main.temp),
@@ -106,49 +143,45 @@ function getWeather(locationQuery) {
             windSpeed: Math.round(data.wind.speed),
             humidity: Math.round(data.main.humidity),
             condition: weatherConditions[data.weather[0].main],
-            sunset: dayjs.unix(data.sys.sunset).format("h:mm A"),
+            sunset: dayjs.unix(data.sys.sunset).format(timeFormat),
           });
         }
 
-        // Get 5-day forecast.
+        // Print 5-day forecast.
         if (apiType === "forecast") {
-          for (var i = 1; i < data.list.length; i += 2) {
-            // Morning forecasts
-            if (data.list[i].dt_txt.endsWith("09:00:00")) {
-              console.log("Morning: " + data.list[i].dt_txt);
-              //format("YYYY-MM-DD HH:mm:ss")
+          for (var interval of data.list) {
+            date = dayjs(interval.dt_txt, apiDateFormat).format(dateFormat);
+
+            if (interval.dt_txt.endsWith("09:00:00")) {
+              forecast[date] = {};
+              forecast[date].morningTemp = interval.main.temp;
+              forecast[date].morningCondition = interval.weather[0].main;
             }
-            // Afternoon forecasts
-            if (data.list[i].dt_txt.endsWith("15:00:00")) {
-              console.log("Afternoon: " + data.list[i].dt_txt);
+
+            if (interval.dt_txt.endsWith("15:00:00")) {
+              forecast[date].afternoonTemp = interval.main.temp;
+              forecast[date].afternoonCondition = interval.weather[0].main;
+              forecast[date].windSpeed = interval.wind.speed;
+              forecast[date].humidity = interval.main.humidity;
             }
-            // Evening forecasts
-            if (data.list[i].dt_txt.endsWith("21:00:00")) {
-              console.log("Evening: " + data.list[i].dt_txt);
+
+            if (interval.dt_txt.endsWith("18:00:00")) {
+              forecast[date].eveningTemp = interval.main.temp;
+              forecast[date].eveningCondition = interval.weather[0].main;
             }
           }
+          printForecast(forecast);
         }
       });
   }
-  fetchGeocode();
 }
 
-// Run when document is ready.
-$(function () {
-  // Get location input.
-  $("#location-form").on("submit", function (e) {
-    e.preventDefault();
-    //TODO: ADD VALIDATION.
-    getWeather($("#location-input").val().trim());
-  });
-
-  // Event delegation to handle newly saved cities.
-  $("#saved-cities").on("click", "button", function (e) {
-    getWeather(e.target.textContent);
-  });
-});
-
-var pexelsApiKey = "yrsB9C7fdv4f4SKZW0x33yLQTI5K0aQRyMFY6UUZPvHFdOGKiltYHvC6";
+function addSaveBtn() {
+  $("#city-controls").append(`
+      <button id="save-city-btn" class="btn btn-outline-light" type="button">
+        <i class="fa-solid fa-floppy-disk"></i>
+      </button>
+    `);
 
   // Save current city to saved cities dropdown.
   $("#save-city").on("click", function () {
@@ -162,4 +195,25 @@ var pexelsApiKey = "yrsB9C7fdv4f4SKZW0x33yLQTI5K0aQRyMFY6UUZPvHFdOGKiltYHvC6";
         </button>
       </li>`
     );
-  })
+  });
+}
+
+// Run when document is ready.
+$(function () {
+  // Get location input.
+  $("#location-form").on("submit", function (e) {
+    e.preventDefault();
+    //TODO: ADD VALIDATION.
+    // Show weather data.
+    getWeather($("#location-input").val().trim());
+    // Show save button.
+    if (!$("#save-city-btn").length) addSaveBtn();
+  });
+
+  // Event delegation to handle newly saved cities.
+  $("#saved-cities").on("click", "button", function (e) {
+    getWeather(e.target.textContent);
+  });
+});
+
+var pexelsApiKey = "yrsB9C7fdv4f4SKZW0x33yLQTI5K0aQRyMFY6UUZPvHFdOGKiltYHvC6";
