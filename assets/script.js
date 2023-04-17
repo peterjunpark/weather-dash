@@ -14,8 +14,8 @@ function getWeather(locationQuery) {
         coordinates = [data[0].lat, data[0].lon];
 
         // Populate selected city and today's date.
-        $("#current-city").append(`<i class="fa-solid fa-tree-city me-3"></i>${data[0].name}, ${data[0].state}`);
-        $("#today").append(`<i class="fa-solid fa-calendar-day me-3"></i>${dayjs().format("ddd, MMMM D")}`);
+        $("#current-city").append(`<i class="fa-solid fa-tree-city me-3"></i>${data[0].name}, <small>${data[0].state}</small>`);
+        $("#today").append(`<i class="fa-solid fa-calendar-day me-3"></i>${dayjs().format("dddd, MMMM D")}`);
 
         fetchWeather("weather");
         fetchWeather("forecast");
