@@ -1,21 +1,21 @@
 var dateFormat = "ddd, MMMM D";
 var timeFormat = "h:mm A";
 var weatherConditions = {
-  Ash: `<i class="fa-solid fa-volcano display-2 me-3"></i>`,
-  Clear: '<i class="fa-solid fa-sun display-2 me-3"></i>',
-  Clouds: '<i class="fa-solid fa-cloud display-2 me-3"></i>',
-  Drizzle: '<i class="fa-solid fa-cloud-rain display-2 me-3"></i>',
-  Dust: `<i class="fa-solid fa-smog display-2 me-3"></i>`,
-  Fog: `<i class="fa-solid fa-smog display-2 me-3"></i>`,
-  Haze: `<i class="fa-solid fa-smog display-2 me-3"></i>`,
-  Mist: `<i class="fa-solid fa-smog display-2 me-3"></i>`,
-  Rain: `<i class="fa-solid fa-cloud-showers-heavy display-2 me-3"></i>`,
-  Sand: `<i class="fa-solid fa-smog display-2 me-3"></i>`,
-  Smoke: `<i class="fa-solid fa-smog display-2 me-3"></i>`,
-  Snow: `<i class="fa-solid fa-snowflake display-2 me-3"></i>`,
-  Squall: `<i class="fa-solid fa-hurricane display-2 me-3"></i>`,
-  Thunderstorm: `<i class="fa-solid fa-cloud-bolt display-2 me-3"></i>`,
-  Tornado: `<i class="fa-solid fa-tornado display-2 me-3"></i>`,
+  Ash: `<i class="fa-solid fa-volcano mx-2"></i>`,
+  Clear: '<i class="fa-solid fa-sun mx-2"></i>',
+  Clouds: '<i class="fa-solid fa-cloud mx-2"></i>',
+  Drizzle: '<i class="fa-solid fa-cloud-rain mx-2"></i>',
+  Dust: `<i class="fa-solid fa-smog mx-2"></i>`,
+  Fog: `<i class="fa-solid fa-smog mx-2"></i>`,
+  Haze: `<i class="fa-solid fa-smog mx-2"></i>`,
+  Mist: `<i class="fa-solid fa-smog mx-2"></i>`,
+  Rain: `<i class="fa-solid fa-cloud-showers-heavy mx-2"></i>`,
+  Sand: `<i class="fa-solid fa-smog mx-2"></i>`,
+  Smoke: `<i class="fa-solid fa-smog mx-2"></i>`,
+  Snow: `<i class="fa-solid fa-snowflake mx-2"></i>`,
+  Squall: `<i class="fa-solid fa-hurricane mx-2"></i>`,
+  Thunderstorm: `<i class="fa-solid fa-cloud-bolt  mx-2"></i>`,
+  Tornado: `<i class="fa-solid fa-tornado mx-2"></i>`,
 };
 var savedCities = [];
 
@@ -29,7 +29,7 @@ function printLocation(city, state) {
         <div class="card card-body bg-secondary text-light border-dark m-1">
           <h2 class="d-flex justify-content-between">
             <span id="current-city">
-              <i class="fa-solid fa-tree-city me-3"></i>${city}, <small>${state}</small>
+              <i class="fa-solid fa-tree-city me-3"></i>${city}
             </span>
             <span>
               <i class="fa-solid fa-calendar-day me-3"></i>${dayjs().format(
@@ -42,10 +42,12 @@ function printLocation(city, state) {
 
       <!-- Today's weather -->
       <section id="today-section" class="row"></section>
-  </div>
-
-
+    </div>
   `);
+
+  if (state) {
+    $("#current-city").append(`, <small>${state}</small>`);
+  }
 }
 
 function printToday(today) {
@@ -61,7 +63,9 @@ function printToday(today) {
             <li><i class="fa-solid fa-temperature-empty me-1"></i>Low: ${today.lowTemp}℃</li>
             <li><i class="fa-solid fa-temperature-full me-1"></i>High: ${today.highTemp}℃</li>
           </ul>
-          ${today.condition}
+          <div id="today-condition">
+            ${today.condition}
+          </div>
         </div>
       </div>
         <div class="row">
@@ -76,6 +80,8 @@ function printToday(today) {
       </div>
     </div>
   `);
+
+  $("#today-condition i").addClass("display-2");
 }
 
 function printForecast(forecast) {
@@ -86,11 +92,20 @@ function printForecast(forecast) {
         <div class="forecast card card-body bg-secondary text-light border-dark m-1">
             <h4 class="card-title text-end">${date}</h4>
             <ul>
-                <li>Morning: ${forecast[date].morningTemp}℃</li>
-                <li>Afternoon: ${forecast[date].afternoonTemp}℃</li>
-                <li>Evening: ${forecast[date].eveningTemp}℃</li>
+                <li>
+                  Morning: ${Math.round(forecast[date].morningTemp)}℃
+                  ${forecast[date].morningCondition}
+                </li>
+                <li>
+                  Afternoon: ${Math.round(forecast[date].afternoonTemp)}
+                  ${forecast[date].afternoonCondition}
+                </li>
+                <li>
+                  Evening: ${Math.round(forecast[date].eveningTemp)}℃
+                  ${forecast[date].eveningCondition}
+                </li>
                 <hr>
-                <li>Wind speed: ${forecast[date].windSpeed}km/h</li>
+                <li>Wind speed: ${Math.round(forecast[date].windSpeed)}km/h</li>
                 <li>Humidity: ${forecast[date].humidity}%</li>
             </ul>
         </div>
@@ -121,6 +136,9 @@ function getWeather(locationQuery) {
         printLocation(city, data[0].state);
         fetchWeather("weather"); // Today.
         fetchWeather("forecast"); // Forecast.
+      })
+      .catch(error => {
+        alert("shit")
       });
   })();
 
@@ -158,19 +176,19 @@ function getWeather(locationQuery) {
             if (interval.dt_txt.endsWith("09:00:00")) {
               forecast[date] = {};
               forecast[date].morningTemp = interval.main.temp;
-              forecast[date].morningCondition = interval.weather[0].main;
+              forecast[date].morningCondition = weatherConditions[interval.weather[0].main];
             }
 
             if (interval.dt_txt.endsWith("15:00:00")) {
               forecast[date].afternoonTemp = interval.main.temp;
-              forecast[date].afternoonCondition = interval.weather[0].main;
+              forecast[date].afternoonCondition = weatherConditions[interval.weather[0].main];
               forecast[date].windSpeed = interval.wind.speed;
               forecast[date].humidity = interval.main.humidity;
             }
 
             if (interval.dt_txt.endsWith("18:00:00")) {
               forecast[date].eveningTemp = interval.main.temp;
-              forecast[date].eveningCondition = interval.weather[0].main;
+              forecast[date].eveningCondition = weatherConditions[interval.weather[0].main];
             }
           }
           printForecast(forecast);
@@ -180,20 +198,22 @@ function getWeather(locationQuery) {
 }
 
 function addSaveBtn() {
-  $("#city-controls").append(`
+  if (!$("#save-city-btn").length) {
+    $("#city-controls").append(`
       <button id="save-city-btn" class="btn btn-outline-light" type="button">
         <i class="fa-solid fa-floppy-disk"></i>
       </button>
     `);
 
-  // Save current city to saved cities dropdown.
-  $("#save-city-btn").on("click", function () {
-    if (!savedCities.includes($("#current-city").text().trim())) {
-      savedCities.unshift($("#current-city").text().trim());
-      localStorage.setItem("savedCities", JSON.stringify(savedCities));
-      getSavedCities();
-    }
-  });
+    // Save current city to saved cities dropdown.
+    $("#save-city-btn").on("click", function () {
+      if (!savedCities.includes($("#current-city").text().trim())) {
+        savedCities.unshift($("#current-city").text().trim());
+        localStorage.setItem("savedCities", JSON.stringify(savedCities));
+        getSavedCities();
+      }
+    });
+  }
 }
 
 function getSavedCities() {
@@ -201,30 +221,37 @@ function getSavedCities() {
     savedCities = JSON.parse(localStorage.getItem("savedCities"));
     $("#saved-cities").empty();
     // Add saved cities to dropdown.
-  for (city of savedCities) {
-    $("#saved-cities").append(
-      `<li><button class="dropdown-item">${city}</button></li>`
-    );
-  }
+    for (city of savedCities) {
+      $("#saved-cities").append(
+        `<li><button class="dropdown-item">${city}</button></li>`
+      );
+    }
   }
 }
 
 // Run when document is ready.
 $(function () {
   getSavedCities();
-  // Get location input.
+
+  // Weather query: search bar.
   $("#location-form").on("submit", function (e) {
     e.preventDefault();
 
     // Show weather data.
     getWeather($("#location-input").val().trim());
+
     // Show save button.
-    if (!$("#save-city-btn").length) addSaveBtn();
+    addSaveBtn();
   });
 
+  // Weather query: saved city
   // Event delegation to handle newly saved cities.
   $("#saved-cities").on("click", "button", function (e) {
+    // Show weather data.
     getWeather(e.target.textContent);
+
+    // Show save button.
+    addSaveBtn();
   });
 });
 
