@@ -10,16 +10,24 @@ function getWeather(locationQuery) {
       .then((response) => {
         return response.json();
       })
-      .then((geocodedLocation) => {
-        coordinates = [geocodedLocation[0].lat, geocodedLocation[0].lon];
+      .then((data) => {
+        coordinates = [data[0].lat, data[0].lon];
+
+        // Populate selected city and today's date.
+        $("#current-city").append(`<i class="fa-solid fa-tree-city me-3"></i>${data[0].name}, ${data[0].state}`);
+        $("#today").append(`<i class="fa-solid fa-calendar-day me-3"></i>${dayjs().format("ddd, MMMM D")}`);
+
         fetchWeather("weather");
         fetchWeather("forecast");
       });
   }
 
   function fetchWeather(apiType) {
-    var weatherCurrent = {};
-    var weatherForecast = [{}, {}, {}, {}, {}];
+    var weatherConditions = {
+      Clear: '<i class="fa-solid fa-sun display-2 me-3"></i>',
+      Clouds: '<i class="fa-solid fa-cloud display-2 me-3"></i>',
+      Rain: '<i class="fa-solid fa-cloud-rain display-2 me-3"></i>',
+    };
 
     fetch(
       `https://api.openweathermap.org/data/2.5/${apiType}?lat=${coordinates[0]}&lon=${coordinates[1]}&units=metric&appid=${openWeatherApiKey}`
@@ -30,10 +38,6 @@ function getWeather(locationQuery) {
       .then((data) => {
         // Get current weather.
         if (apiType === "weather") {
-          // Populate selected city and today's date.
-          $("#current-city").append(`<i class="fa-solid fa-tree-city me-3"></i>${data.name}, ${data.sys.country}`);
-          $("#today").append(`<i class="fa-solid fa-calendar-day me-3"></i>${dayjs().format("ddd, MMMM D")}`);
-
           // Populate today's weather.
           $("#today-card").append(`
             <div class="row">
@@ -44,7 +48,7 @@ function getWeather(locationQuery) {
                   <li><i class="fa-solid fa-temperature-empty me-1"></i>Low: ${Math.round(data.main.temp_min)}℃</li>
                   <li><i class="fa-solid fa-temperature-full me-1"></i>High: ${Math.round(data.main.temp_max)}℃</li>
                 </ul>
-                <i class="fa-solid fa-cloud display-2 me-3"></i>
+                ${weatherConditions[data.weather[0].main]}
               </div>
             </div>
             <div class="row">
