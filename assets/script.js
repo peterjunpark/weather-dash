@@ -1,21 +1,21 @@
 var dateFormat = "ddd, MMMM D";
 var timeFormat = "h:mm A";
 var weatherConditions = {
-  Ash: `<i class="fa-solid fa-volcano mx-2"></i>`,
-  Clear: '<i class="fa-solid fa-sun mx-2"></i>',
-  Clouds: '<i class="fa-solid fa-cloud mx-2"></i>',
-  Drizzle: '<i class="fa-solid fa-cloud-rain mx-2"></i>',
-  Dust: `<i class="fa-solid fa-smog mx-2"></i>`,
-  Fog: `<i class="fa-solid fa-smog mx-2"></i>`,
-  Haze: `<i class="fa-solid fa-smog mx-2"></i>`,
-  Mist: `<i class="fa-solid fa-smog mx-2"></i>`,
-  Rain: `<i class="fa-solid fa-cloud-showers-heavy mx-2"></i>`,
-  Sand: `<i class="fa-solid fa-smog mx-2"></i>`,
-  Smoke: `<i class="fa-solid fa-smog mx-2"></i>`,
-  Snow: `<i class="fa-solid fa-snowflake mx-2"></i>`,
-  Squall: `<i class="fa-solid fa-hurricane mx-2"></i>`,
-  Thunderstorm: `<i class="fa-solid fa-cloud-bolt  mx-2"></i>`,
-  Tornado: `<i class="fa-solid fa-tornado mx-2"></i>`,
+  Ash: `<i class="fa-solid fa-volcano mx-1"></i>`,
+  Clear: '<i class="fa-solid fa-sun mx-1"></i>',
+  Clouds: '<i class="fa-solid fa-cloud mx-1"></i>',
+  Drizzle: '<i class="fa-solid fa-cloud-rain mx-1"></i>',
+  Dust: `<i class="fa-solid fa-smog mx-1"></i>`,
+  Fog: `<i class="fa-solid fa-smog mx-1"></i>`,
+  Haze: `<i class="fa-solid fa-smog mx-1"></i>`,
+  Mist: `<i class="fa-solid fa-smog mx-1"></i>`,
+  Rain: `<i class="fa-solid fa-cloud-showers-heavy mx-1"></i>`,
+  Sand: `<i class="fa-solid fa-smog mx-1"></i>`,
+  Smoke: `<i class="fa-solid fa-smog mx-1"></i>`,
+  Snow: `<i class="fa-solid fa-snowflake mx-1"></i>`,
+  Squall: `<i class="fa-solid fa-hurricane mx-1"></i>`,
+  Thunderstorm: `<i class="fa-solid fa-cloud-bolt mx-1"></i>`,
+  Tornado: `<i class="fa-solid fa-tornado mx-1"></i>`,
 };
 var removeSection = {
   main: function () {
@@ -27,6 +27,9 @@ var removeSection = {
   forecast: function () {
     $("#forecast-section").empty();
   },
+  status: function () {
+    $("#status-msg").text("");
+  }
 };
 var savedCities = [];
 
@@ -57,6 +60,9 @@ function addSaveBtn() {
         savedCities.unshift($("#current-city").text().trim());
         localStorage.setItem("savedCities", JSON.stringify(savedCities));
         getSavedCities();
+        $("#status-msg").text("> City saved to list")
+      } else {
+        $("#status-msg").text("> City already exists in list")
       }
     });
   }
@@ -86,6 +92,7 @@ function getWeather(locationQuery) {
       })
       .catch((error) => {
         Object.values(removeSection).forEach((remove) => remove());
+        $("#status-msg").text("> City not found")
       });
   })();
 
@@ -157,8 +164,7 @@ function printLocation(city, state) {
         <div class="card card-body bg-secondary text-light border-dark m-1">
           <h2 class="d-flex justify-content-between">
             <span id="current-city">
-              <i class="fa-solid fa-tree-city me-3"></i>${city}
-            </span>
+              <i class="fa-solid fa-tree-city me-3"></i>${city}</span>
             <span>
               <i class="fa-solid fa-calendar-day me-3"></i>${dayjs().format(
                 dateFormat
@@ -216,7 +222,7 @@ function printForecast(forecast) {
   removeSection.forecast();
   for (var date in forecast) {
     $("#forecast-section").append(`
-     <div class="col p-0">
+     <div class="col-lg col-sm-6 p-0">
         <div class="forecast card card-body bg-secondary text-light border-dark m-1">
             <h4 class="card-title text-end">${date}</h4>
             <ul>
@@ -249,12 +255,18 @@ $(function () {
   // Weather query: search bar.
   $("#location-form").on("submit", function (e) {
     e.preventDefault();
+    removeSection.status();
+    if (!$("#location-input").val().trim()) {
+      $("#status-msg").text("> City to search cannot be blank")
+      return;
+    }
     getWeather($("#location-input").val().trim());
   });
 
   // Weather query: saved city
   // Event delegation to handle newly saved cities.
   $("#saved-cities").on("click", "button", function (e) {
+    removeSection.status();
     getWeather(e.target.textContent);
   });
 });
