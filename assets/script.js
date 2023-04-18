@@ -239,8 +239,8 @@ function printForecast(forecast) {
                   ${forecast[date].eveningCondition}
                 </li>
                 <hr>
-                <li>Wind speed: ${Math.round(forecast[date].windSpeed)}km/h</li>
-                <li>Humidity: ${forecast[date].humidity}%</li>
+                <li><i class="fa-solid fa-wind me-1"></i>Wind speed: ${Math.round(forecast[date].windSpeed)}km/h</li>
+                <li><li><i class="fa-solid fa-water me-1"></i>Humidity: ${forecast[date].humidity}%</li>
             </ul>
         </div>
       </div>
